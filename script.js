@@ -1,35 +1,28 @@
-/* ==========================================
+/* ==================================================
    MOBILE MENU
-========================================== */
+================================================== */
 
-const menuBtn =
-    document.getElementById("menuBtn");
+const menuBtn = document.getElementById("menuBtn");
+const navLinks = document.getElementById("navLinks");
 
-const navLinks =
-    document.getElementById("navLinks");
+if (menuBtn && navLinks) {
 
+    menuBtn.addEventListener("click", () => {
 
-menuBtn.addEventListener("click", () => {
+        navLinks.classList.toggle("show");
 
-    navLinks.classList.toggle("show");
+        if (navLinks.classList.contains("show")) {
+            menuBtn.textContent = "✕";
+        } else {
+            menuBtn.textContent = "☰";
+        }
 
-    if (navLinks.classList.contains("show")) {
-
-        menuBtn.textContent = "✕";
-
-    } else {
-
-        menuBtn.textContent = "☰";
-
-    }
-
-});
+    });
 
 
-/* Close menu */
+    /* Close menu after clicking a link */
 
-document.querySelectorAll(".nav-link")
-    .forEach(link => {
+    document.querySelectorAll(".nav-link").forEach(link => {
 
         link.addEventListener("click", () => {
 
@@ -41,65 +34,77 @@ document.querySelectorAll(".nav-link")
 
     });
 
-
-
-/* ==========================================
-   DARK / LIGHT MODE
-========================================== */
-
-const themeBtn =
-    document.getElementById("themeBtn");
-
-
-const savedTheme =
-    localStorage.getItem("nijhum-theme");
-
-
-if (savedTheme === "dark") {
-
-    document.body.classList.add("dark");
-
-    themeBtn.textContent = "☀️";
-
 }
 
 
-themeBtn.addEventListener("click", () => {
 
-    document.body.classList.toggle("dark");
+/* ==================================================
+   DARK / LIGHT MODE
+================================================== */
+
+const themeBtn = document.getElementById("themeBtn");
+
+if (themeBtn) {
+
+    const savedTheme =
+        localStorage.getItem("nijhum-theme");
 
 
-    const isDark =
-        document.body.classList.contains("dark");
+    /* Load saved theme */
 
+    if (savedTheme === "dark") {
 
-    if (isDark) {
+        document.body.classList.add("dark");
 
         themeBtn.textContent = "☀️";
-
-        localStorage.setItem(
-            "nijhum-theme",
-            "dark"
-        );
 
     } else {
 
         themeBtn.textContent = "🌙";
 
-        localStorage.setItem(
-            "nijhum-theme",
-            "light"
-        );
-
     }
 
-});
+
+    /* Change theme */
+
+    themeBtn.addEventListener("click", () => {
+
+        document.body.classList.toggle("dark");
+
+
+        const isDark =
+            document.body.classList.contains("dark");
+
+
+        if (isDark) {
+
+            themeBtn.textContent = "☀️";
+
+            localStorage.setItem(
+                "nijhum-theme",
+                "dark"
+            );
+
+        } else {
+
+            themeBtn.textContent = "🌙";
+
+            localStorage.setItem(
+                "nijhum-theme",
+                "light"
+            );
+
+        }
+
+    });
+
+}
 
 
 
-/* ==========================================
+/* ==================================================
    TYPING ANIMATION
-========================================== */
+================================================== */
 
 const typingText =
     document.getElementById("typingText");
@@ -108,24 +113,24 @@ const typingText =
 const words = [
 
     "creative websites",
-
     "interactive experiences",
-
     "AI ideas",
-
     "biometric concepts"
 
 ];
 
 
 let wordIndex = 0;
-
 let characterIndex = 0;
-
 let deleting = false;
 
 
 function typeLoop() {
+
+    if (!typingText) {
+        return;
+    }
+
 
     const currentWord =
         words[wordIndex];
@@ -137,6 +142,8 @@ function typeLoop() {
             characterIndex
         );
 
+
+    /* Typing */
 
     if (!deleting) {
 
@@ -150,16 +157,23 @@ function typeLoop() {
 
             deleting = true;
 
+
             setTimeout(
                 typeLoop,
                 1200
             );
 
+
             return;
 
         }
 
-    } else {
+    }
+
+
+    /* Deleting */
+
+    else {
 
         characterIndex--;
 
@@ -169,6 +183,7 @@ function typeLoop() {
             characterIndex = 0;
 
             deleting = false;
+
 
             wordIndex =
                 (wordIndex + 1)
@@ -183,7 +198,9 @@ function typeLoop() {
 
         typeLoop,
 
-        deleting ? 55 : 90
+        deleting
+            ? 55
+            : 90
 
     );
 
@@ -194,186 +211,241 @@ typeLoop();
 
 
 
-/* ==========================================
+/* ==================================================
    ACTIVE NAVIGATION
-========================================== */
+================================================== */
 
 const navItems =
     document.querySelectorAll(".nav-link");
 
 
 const sections =
-    document.querySelectorAll(
-        "section[id]"
-    );
+    document.querySelectorAll("section[id]");
 
 
-window.addEventListener(
-    "scroll",
-    () => {
+function updateActiveNavigation() {
 
-        let current = "";
+    let current = "";
 
 
-        sections.forEach(section => {
+    sections.forEach(section => {
 
-            if (
-                window.scrollY >=
-                section.offsetTop - 160
-            ) {
-
-                current =
-                    section.id;
-
-            }
-
-        });
+        const sectionTop =
+            section.offsetTop;
 
 
-        navItems.forEach(link => {
+        if (
+            window.scrollY >=
+            sectionTop - 180
+        ) {
 
-            link.classList.toggle(
+            current =
+                section.getAttribute("id");
 
-                "active",
-
-                link.getAttribute(
-                    "href"
-                ) === "#" + current
-
-            );
-
-        });
-
-    }
-);
-
-
-
-/* ==========================================
-   SCROLL REVEAL
-========================================== */
-
-const revealObserver =
-    new IntersectionObserver(
-
-        entries => {
-
-            entries.forEach(entry => {
-
-                if (
-                    entry.isIntersecting
-                ) {
-
-                    entry.target
-                        .classList
-                        .add("visible");
-
-                }
-
-            });
-
-        },
-
-        {
-            threshold: 0.12
         }
-
-    );
-
-
-document
-    .querySelectorAll(".reveal")
-    .forEach(element => {
-
-        revealObserver.observe(
-            element
-        );
 
     });
 
 
+    navItems.forEach(link => {
 
-/* ==========================================
-   SKILL BAR ANIMATION
-========================================== */
+        link.classList.toggle(
 
-const skillSection =
-    document.getElementById(
-        "skills"
-    );
+            "active",
 
+            link.getAttribute("href")
+            ===
+            "#" + current
 
-const skillObserver =
-    new IntersectionObserver(
+        );
 
-        entries => {
+    });
 
-            if (
-                entries[0]
-                    .isIntersecting
-            ) {
-
-                document
-                    .querySelectorAll(
-                        ".bar span"
-                    )
-                    .forEach(bar => {
-
-                        bar.style.width =
-                            bar.dataset.width;
-
-                    });
+}
 
 
-                skillObserver.disconnect();
-
-            }
-
-        },
-
-        {
-            threshold: 0.3
-        }
-
-    );
-
-
-skillObserver.observe(
-    skillSection
+window.addEventListener(
+    "scroll",
+    updateActiveNavigation
 );
 
 
-
-/* ==========================================
-   COUNTER ANIMATION
-========================================== */
-
-const aboutSection =
-    document.getElementById(
-        "about"
-    );
+updateActiveNavigation();
 
 
-const counterObserver =
-    new IntersectionObserver(
 
-        entries => {
+/* ==================================================
+   SCROLL REVEAL
+================================================== */
 
-            if (
-                !entries[0]
-                    .isIntersecting
-            ) {
+const revealElements =
+    document.querySelectorAll(".reveal");
 
-                return;
 
+if (
+    "IntersectionObserver"
+    in window
+) {
+
+
+    const revealObserver =
+        new IntersectionObserver(
+
+            entries => {
+
+                entries.forEach(entry => {
+
+                    if (
+                        entry.isIntersecting
+                    ) {
+
+                        entry.target
+                            .classList
+                            .add("visible");
+
+
+                        revealObserver.unobserve(
+                            entry.target
+                        );
+
+                    }
+
+                });
+
+            },
+
+            {
+                threshold: 0.12
             }
 
+        );
 
-            document
-                .querySelectorAll(
-                    "[data-target]"
-                )
-                .forEach(counter => {
+
+    revealElements.forEach(element => {
+
+        revealObserver.observe(element);
+
+    });
+
+}
+
+
+/* Fallback */
+
+else {
+
+    revealElements.forEach(element => {
+
+        element.classList.add("visible");
+
+    });
+
+}
+
+
+
+/* ==================================================
+   SKILL BAR ANIMATION
+================================================== */
+
+const skillSection =
+    document.getElementById("skills");
+
+
+if (
+    skillSection &&
+    "IntersectionObserver" in window
+) {
+
+
+    const skillObserver =
+        new IntersectionObserver(
+
+            entries => {
+
+                if (
+                    entries[0].isIntersecting
+                ) {
+
+
+                    document
+                        .querySelectorAll(
+                            ".bar span"
+                        )
+                        .forEach(bar => {
+
+                            const width =
+                                bar.dataset.width;
+
+
+                            if (width) {
+
+                                bar.style.width =
+                                    width;
+
+                            }
+
+                        });
+
+
+                    skillObserver.disconnect();
+
+                }
+
+            },
+
+            {
+                threshold: 0.25
+            }
+
+        );
+
+
+    skillObserver.observe(
+        skillSection
+    );
+
+}
+
+
+
+/* ==================================================
+   COUNTER ANIMATION
+================================================== */
+
+const aboutSection =
+    document.getElementById("about");
+
+
+if (
+    aboutSection &&
+    "IntersectionObserver" in window
+) {
+
+
+    const counterObserver =
+        new IntersectionObserver(
+
+            entries => {
+
+                if (
+                    !entries[0]
+                        .isIntersecting
+                ) {
+
+                    return;
+
+                }
+
+
+                const counters =
+                    document.querySelectorAll(
+                        "[data-target]"
+                    );
+
+
+                counters.forEach(counter => {
+
 
                     const target =
                         Number(
@@ -384,18 +456,31 @@ const counterObserver =
                     let value = 0;
 
 
+                    const duration = 1000;
+
+
+                    const intervalTime =
+                        Math.max(
+                            20,
+                            Math.floor(
+                                duration /
+                                target
+                            )
+                        );
+
+
                     const timer =
                         setInterval(() => {
 
                             value++;
+
 
                             counter.textContent =
                                 value + "+";
 
 
                             if (
-                                value >=
-                                target
+                                value >= target
                             ) {
 
                                 clearInterval(
@@ -404,31 +489,34 @@ const counterObserver =
 
                             }
 
-                        }, 100);
+                        }, intervalTime);
+
 
                 });
 
 
-            counterObserver.disconnect();
+                counterObserver.disconnect();
 
-        },
+            },
 
-        {
-            threshold: 0.3
-        }
+            {
+                threshold: 0.3
+            }
 
+        );
+
+
+    counterObserver.observe(
+        aboutSection
     );
 
-
-counterObserver.observe(
-    aboutSection
-);
+}
 
 
 
-/* ==========================================
+/* ==================================================
    PROJECT FILTER
-========================================== */
+================================================== */
 
 const filterButtons =
     document.querySelectorAll(
@@ -444,37 +532,48 @@ const projectCards =
 
 filterButtons.forEach(button => {
 
+
     button.addEventListener(
         "click",
         () => {
 
 
-            filterButtons.forEach(
-                btn => {
+            /* Remove active */
 
-                    btn.classList.remove(
-                        "active"
-                    );
+            filterButtons.forEach(btn => {
 
-                }
-            );
+                btn.classList.remove(
+                    "active"
+                );
 
+            });
+
+
+            /* Add active */
 
             button.classList.add(
                 "active"
             );
 
 
+            /* Get filter */
+
             const filter =
                 button.dataset.filter;
 
 
+            /* Filter cards */
+
             projectCards.forEach(card => {
+
+
+                const category =
+                    card.dataset.category;
+
 
                 if (
                     filter === "all" ||
-                    card.dataset.category ===
-                    filter
+                    category === filter
                 ) {
 
                     card.classList.remove(
@@ -498,51 +597,59 @@ filterButtons.forEach(button => {
 
 
 
-/* ==========================================
+/* ==================================================
    PROJECT MODAL
-========================================== */
+================================================== */
 
 const modal =
-    document.getElementById(
-        "modal"
-    );
+    document.getElementById("modal");
 
 
 const modalTitle =
-    document.getElementById(
-        "modalTitle"
-    );
+    document.getElementById("modalTitle");
 
 
 const modalText =
-    document.getElementById(
-        "modalText"
-    );
+    document.getElementById("modalText");
 
 
 const modalClose =
-    document.getElementById(
-        "modalClose"
+    document.getElementById("modalClose");
+
+
+const detailsButtons =
+    document.querySelectorAll(
+        ".details-btn"
     );
 
 
-document
-    .querySelectorAll(
-        ".details-btn"
-    )
-    .forEach(button => {
+detailsButtons.forEach(button => {
 
-        button.addEventListener(
-            "click",
-            () => {
+
+    button.addEventListener(
+        "click",
+        () => {
+
+
+            if (modalTitle) {
 
                 modalTitle.textContent =
-                    button.dataset.title;
+                    button.dataset.title
+                    || "Project";
 
+            }
+
+
+            if (modalText) {
 
                 modalText.textContent =
-                    button.dataset.text;
+                    button.dataset.text
+                    || "";
 
+            }
+
+
+            if (modal) {
 
                 modal.classList.add(
                     "show"
@@ -550,32 +657,82 @@ document
 
             }
 
-        );
+            /* Prevent background scroll */
 
-    });
+            document.body.style.overflow =
+                "hidden";
 
+        }
+    );
+
+});
+
+
+
+/* Close modal function */
 
 function closeModal() {
 
-    modal.classList.remove(
-        "show"
+    if (modal) {
+
+        modal.classList.remove(
+            "show"
+        );
+
+    }
+
+
+    document.body.style.overflow =
+        "";
+
+}
+
+
+
+/* Close button */
+
+if (modalClose) {
+
+    modalClose.addEventListener(
+        "click",
+        closeModal
     );
 
 }
 
 
-modalClose.addEventListener(
-    "click",
-    closeModal
-);
+
+/* Click outside modal */
+
+if (modal) {
+
+    modal.addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target === modal
+            ) {
+
+                closeModal();
+
+            }
+
+        }
+    );
+
+}
 
 
-modal.addEventListener(
-    "click",
+
+/* Escape key */
+
+document.addEventListener(
+    "keydown",
     event => {
 
         if (
-            event.target === modal
+            event.key === "Escape"
         ) {
 
             closeModal();
@@ -587,9 +744,9 @@ modal.addEventListener(
 
 
 
-/* ==========================================
-   CONTACT FORM
-========================================== */
+/* ==================================================
+   CONTACT FORM - FORMSPREE
+================================================== */
 
 const contactForm =
     document.getElementById(
@@ -603,36 +760,185 @@ const formMessage =
     );
 
 
-contactForm.addEventListener(
-    "submit",
-    event => {
-
-        event.preventDefault();
+if (contactForm) {
 
 
-        const name =
-            document
-                .getElementById("name")
-                .value
-                .trim();
+    contactForm.addEventListener(
+        "submit",
+        async event => {
 
 
-        formMessage.textContent =
-            `Thank you, ${name}! Your message has been received.`;
+            /*
+                Prevent normal page reload
+            */
+
+            event.preventDefault();
 
 
-        contactForm.reset();
+            const submitButton =
+                contactForm.querySelector(
+                    'button[type="submit"]'
+                );
 
-    }
-);
+
+            const formData =
+                new FormData(
+                    contactForm
+                );
+
+
+            /* Button loading */
+
+            if (submitButton) {
+
+                submitButton.disabled =
+                    true;
+
+                submitButton.textContent =
+                    "Sending...";
+
+            }
+
+
+            try {
+
+
+                const response =
+                    await fetch(
+                        contactForm.action,
+                        {
+
+                            method: "POST",
+
+                            body: formData,
+
+                            headers: {
+
+                                Accept:
+                                    "application/json"
+
+                            }
+
+                        }
+                    );
+
+
+                if (
+                    response.ok
+                ) {
+
+
+                    /* Success message */
+
+                    if (formMessage) {
+
+                        formMessage.textContent =
+                            "Thank you! Your message has been sent successfully. ✦";
+
+                    }
+
+
+                    /* Clear form */
+
+                    contactForm.reset();
+
+
+                } else {
+
+
+                    /* Error */
+
+                    if (formMessage) {
+
+                        formMessage.textContent =
+                            "Something went wrong. Please try again.";
+
+                    }
+
+                }
+
+
+            } catch (error) {
+
+
+                if (formMessage) {
+
+                    formMessage.textContent =
+                        "Network error. Please check your internet connection.";
+
+                }
+
+            }
+
+
+            /* Restore button */
+
+            if (submitButton) {
+
+                submitButton.disabled =
+                    false;
+
+                submitButton.textContent =
+                    "Send Message ✦";
+
+            }
+
+        }
+    );
+
+}
 
 
 
-/* ==========================================
+/* ==================================================
    CURRENT YEAR
-========================================== */
+================================================== */
 
-document.getElementById(
-    "year"
-).textContent =
-    new Date().getFullYear();
+const yearElement =
+    document.getElementById("year");
+
+
+if (yearElement) {
+
+    yearElement.textContent =
+        new Date().getFullYear();
+
+}
+
+
+
+/* ==================================================
+   PROFILE IMAGE ERROR HANDLING
+================================================== */
+
+const profileImage =
+    document.querySelector(
+        ".photo-ring img"
+    );
+
+
+if (profileImage) {
+
+
+    profileImage.addEventListener(
+        "error",
+        () => {
+
+            console.log(
+                "Profile image could not be loaded."
+            );
+
+        }
+    );
+
+}
+
+
+
+/* ==================================================
+   FINISHED
+================================================== */
+
+console.log(
+    "Nijhum Portfolio loaded successfully ✦"
+);
